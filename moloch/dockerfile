@@ -1,0 +1,40 @@
+FROM jasonish/suricata:6.0.3
+# You need to change this 
+ENV Version "moloch-3.0.0-1.x86_64.rpm"
+ENV SURICATA_OPTIONS "-i enp0s9 "
+
+# mirror url setting 
+RUN sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-*
+RUN sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-*
+# RUN echo "nameserver 1.1.1.1" >> /etc/resolv.conf
+# RUN echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+# Proxy setting
+# ENV echo "export https_proxy=https://172.16.9.40:3128" >>  /etc/profile
+# ENV echo "export http_proxy=http//172.16.9.40:3128" >>  /etc/profile
+# RUN echo "proxy=http://172.16.9.40:3128" >> /etc/yum.conf 
+# RUN echo "http_proxy=172.16.9.40:3128" >> ~/.wgetrc
+
+# RUN dnf install perl-Digest -y
+ADD ./perl-Net-SSLeay-1.88-1.module_el8.3.0+410+ff426aa3.x86_64.rpm ./
+ADD ./libyaml-devel-0.1.7-5.el8.x86_64.rpm /moloch/libyaml-devel-0.1.7-5.el8.x86_64.rpm
+ADD ./$Version /moloch/$Version
+ADD ./cert-forensics-tools-release-el8.rpm ./
+RUN yum update -y
+RUN yum localinstall ./perl-Net-SSLeay-1.88-1.module_el8.3.0+410+ff426aa3.x86_64.rpm -y
+RUN yum install -y perl-Digest
+#ADD ./pfring-7.6.0-2887.x86_64.rpm ./
+#ADD ./ndpi-3.2.0-2340.x86_64.rpm ./ 
+#RUN yum localinstall -y ndpi-3.2.0-2340.x86_64.rpm
+#RUN yum localinstall -y pfring-7.6.0-2887.x86_64.rpm
+
+RUN yum install -y perl-libwww-perl
+RUN yum install -y perl-JSON
+RUN yum install -y pkgconfig
+RUN yum install -y perl-LWP-Protocol-https
+RUN yum install -y vim
+RUN yum install -y wget
+# RUN yum install -y libpcap-devel
+WORKDIR /moloch
+RUN rpm -ivh libyaml-devel-0.1.7-5.el8.x86_64.rpm
+RUN rpm -ivh $Version
+RUN rpm -ivh ../cert-forensics-tools-release-el8.rpm

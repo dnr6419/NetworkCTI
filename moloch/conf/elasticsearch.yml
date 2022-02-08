@@ -1,0 +1,25 @@
+cluster.name: "dnr6419"
+node.name: 0ppr2s
+
+network.host: 0.0.0.0
+http.port: 9200
+
+
+ingest.geoip.downloader.enabled: false
+cluster.initial_master_nodes: 0ppr2s
+
+cluster.routing.allocation.disk.watermark.low: 300gb
+cluster.routing.allocation.disk.watermark.high: 200gb
+cluster.routing.allocation.disk.watermark.flood_stage: 100gb
+
+action.search.shard_count.limit: 100000
+thread_pool.write.queue_size: 2000
+http.compression: true
+
+# 복구 시간
+cluster.routing.allocation.cluster_concurrent_rebalance: 10
+cluster.routing.allocation.node_concurrent_recoveries: 5
+cluster.routing.allocation.node_initial_primaries_recoveries: 5
+indices.recovery.max_bytes_per_sec: "400mb"
+
+logger.org.elasticsearch.discovery: INFO

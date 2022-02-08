@@ -1,0 +1,46 @@
+cluster.name: "dnr6419"
+
+
+path.logs: /data/elastic/log
+node.name: 0ppr2s
+# ----------------------------------- Memory -----------------------------------
+#
+# Lock the memory on startup:
+#
+
+#bootstrap.memory_lock: true
+#
+# on the system and that the owner of the process is allowed to use this
+# limit.
+#
+# Elasticsearch performs poorly when the system is swapping the memory.
+#
+# ---------------------------------- Network -----------------------------------
+#
+# By default Elasticsearch is only accessible on localhost. Set a different
+# address here to expose this node on the network:
+#
+network.host: 0.0.0.0
+#
+# By default Elasticsearch listens for HTTP traffic on the first free port it
+# finds starting at 9200. Set a specific HTTP port here:
+#
+http.port: 9200
+
+#
+# Bootstrap the cluster using an initial set of master-eligible nodes:
+#
+cluster.initial_master_nodes: 0ppr2s
+
+# try
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+
+xpack.security:
+  enabled: true
+  transport:
+    ssl:
+      enabled: true
+
+  # ELASTIC_USERNAME=elastic
+  # ELASTIC_PASSWORD=DkIedPPSCb

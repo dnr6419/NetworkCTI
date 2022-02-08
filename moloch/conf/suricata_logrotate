@@ -1,0 +1,25 @@
+/var/log/suricata/*.json {
+    su root root
+    missingok
+    rotate 50
+    nocompress
+    sharedscripts
+    dateext
+    dateformat .%Y%m%d%s
+    postrotate
+        suricatasc -c reopen-log-files
+    endscript
+}
+/var/log/suricata/*.log {
+    su root root
+    missingok
+    daily
+    rotate 10
+    nocompress
+    sharedscripts
+    dateext
+    dateformat .%Y%m%d%s
+    postrotate
+        suricatasc -c reopen-log-files
+    endscript
+}

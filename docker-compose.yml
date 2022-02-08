@@ -1,0 +1,75 @@
+version: '3.7'
+
+services:
+    elasticsearch:
+        container_name: elasticsearch
+        image: elastic/elasticsearch:7.12.1
+        volumes:
+            - ./data:/data
+            - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+            - ./elastic.sh:/usr/share/elasticsearch/elastic.sh
+            # - ./jvm.options:/usr/share/elasticsearch/config/jvm.options
+            - ./data/elastic/log:/data/elastic/log
+            
+        command: /usr/share/elasticsearch/elastic.sh
+        environment:
+            - TZ=Asia/Seoul
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - "ES_JAVA_OPTS=-Des.insecure.allow.root=true"
+            
+        stdin_open: true
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        tty: true
+        networks:
+            EKF:
+                ipv4_address: 172.22.0.2
+
+    kibana:
+        container_name: kibana
+        image: docker.elastic.co/kibana/kibana:7.12.1
+        ports:
+             - 5601:5601
+        volumes:
+             - ./data:/data
+             # - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+        environment:
+             - TZ=Asia/Seoul
+             - SERVER_PORT=5601
+             - ELASTICSEARCH_HOSTS=http://172.22.0.2:9200/
+             - XPACK_MONITORING_ENABLED="true"
+             - XPACK_MONITORING_COLLECTION_ENABLED="true"
+             - XPACK_SECURITY_ENABLED="true"
+             - ELASTICSEARCH_USERNAME="elastic"
+             - ELASTICSEARCH_PASSWORD="wsec@))!"
+        networks:
+            EKF:
+                ipv4_address: 172.22.0.3
+        depends_on: 
+            - elasticsearch
+ 
+# 
+    filebeat:
+        build: .
+        container_name: filebeat
+        user: root
+        volumes:
+            - ./data:/data
+        environment:
+            - TZ=Asia/Seoul
+        networks:
+            EKF:
+                ipv4_address: 172.22.0.5
+        stdin_open: true
+        tty: true
+    
+     
+networks:
+      EKF:
+          ipam:
+            driver: default
+            config:           
+                - subnet: 172.22.0.0/16
+

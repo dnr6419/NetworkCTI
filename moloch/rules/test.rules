@@ -1,0 +1,7 @@
+alert tcp any any -> any any (msg:"[EXPOIT] ATTACK"; content:"/_ignition/execute-solution"; sid:4000000;)
+alert tcp any any -> any any (msg:"[EXPOIT] ATTACK.A"; content:"/Autodiscover/Autodiscover.xml"; sid:4000001;)
+alert tcp any any -> any any (msg:"[EXPOIT] ATTACK.B"; content:"HelloThinkPHP21"; sid:4000003;)
+alert tcp any any -> any any (msg:"[EXPOIT] ATTACK.C"; content:"shell?cd+/tmp|3B|rm"; sid:4000004;)
+alert tcp any any -> any any (msg:"[EXPOIT] ATTACK.D"; content:"/boaform/admin/formLogin?username"; sid:4000005;)
+alert tcp any any -> any any (msg:"[EXPOIT] ATTACK.E"; content:"/setup.cgi?next_file"; sid:4000006;)
+

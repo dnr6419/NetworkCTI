@@ -1,0 +1,75 @@
+version: '3.7'
+
+services:
+    elasticsearch:
+        container_name: moloch_elastic
+        image: elastic/elasticsearch:7.14.0 # 최신 버전
+        volumes:
+            - ./conf/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+        environment:
+            - TZ=Asia/Seoul
+            - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+        stdin_open: true
+        tty: true
+        networks:
+            forensic:
+                ipv4_address: 172.18.0.2
+        expose:
+            - "9200"        
+        ports:
+            - "9200:9200"
+    logstash:
+        container_name: logstash
+        image: docker.elastic.co/logstash/logstash:7.13.3 
+        # install the syslog plugin
+        command: bash -c "bin/logstash-plugin install file:///tmp/logstash-offline-plugins-7.13.3.zip && logstash -f /usr/share/logstash/pipeline/logstash.conf"
+        volumes:
+            - ${PWD}/suricata:/var/log/data
+            - ./conf/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml 
+            - ./conf/logstash/jvm.options://usr/share/logstash/config/jvm.options
+            - ./conf/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf 
+            # - ./conf/logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml
+            # - ./conf/logstash/mongo.conf:/usr/share/logstash/pipeline/mongo.conf
+            # - ./conf/logstash/std.conf:/usr/share/logstash/pipeline/std.conf 
+            - ./logstash-offline-plugins-7.13.3.zip:/tmp/logstash-offline-plugins-7.13.3.zip 
+        stdin_open: true
+        tty: true
+        cap_add:
+            - NET_ADMIN
+            - sys_nice
+        network_mode: host
+        privileged: true
+
+    moloch_suricata:
+        container_name: surich
+        build: .
+        volumes:
+            - ./conf/suricata_logrotate:/etc/logrotate.d/suricata
+            - ./conf/classification.config:/usr/local/etc/suricata/classification.config
+            - ./conf/reference.config:/usr/local/etc/suricata/reference.config
+            - ./conf/suricata.yaml:/etc/suricata/suricata.yaml
+            - ./rules:/usr/local/var/lib/suricata/rules
+            - ./conf/config.ini:/data/moloch/etc/config.ini
+            - ./conf/oui.txt:/data/moloch/etc/oui.txt
+            - ./conf/ipv4-address-space.csv:/data/moloch/etc/ipv4-address-space.csv
+            - ./conf/moloch_rules:/moloch/rules
+            - /home/ubuntu/suricata:/var/log/suricata
+            - /home/ubuntu/moloch/raw:/data/moloch/raw
+            - /home/ubuntu/moloch/logs:/data/moloch/logs
+        environment:
+            - TZ=Asia/Seoul
+        stdin_open: true
+        tty: true
+        cap_add:
+            - NET_ADMIN
+            - sys_nice
+        network_mode: host
+        privileged: true
+
+networks:
+    forensic:
+        ipam:
+          driver: default
+          config:           
+              - subnet: 172.18.0.0/16
+

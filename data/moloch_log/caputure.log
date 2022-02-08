@@ -1,0 +1,4 @@
+Jul 17 08:35:38 main.c:202 parse_args(): WARNING: gethostname doesn't return a fully qualified name and getdomainname failed, this may cause issues when viewing pcaps, use the --host option - ubuntu1804
+FATAL ERROR: Couldn't load config file (/data/moloch/etc/config.ini) No such file or directory
+Jul 17 08:38:17 main.c:202 parse_args(): WARNING: gethostname doesn't return a fully qualified name and getdomainname failed, this may cause issues when viewing pcaps, use the --host option - ubuntu1804
+FATAL ERROR: Couldn't load config file (/data/moloch/etc/config.ini) No such file or directory

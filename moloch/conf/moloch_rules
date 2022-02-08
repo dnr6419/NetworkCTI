@@ -1,0 +1,11 @@
+---
+version: 1
+rules:
+  - name: "Drop udp"
+    when: "fieldSet"
+    fields:
+      protocols:
+      - udp
+    ops:
+      _maxPacketsToSave: 0
+

@@ -1,0 +1,15 @@
+# This file is where you define your pipelines. You can define multiple.
+# For more information on multiple pipelines, see the documentation:
+#   https://www.elastic.co/guide/en/logstash/current/multiple-pipelines.html
+
+# - pipeline.id: stdout
+#   path.config: "/usr/share/logstash/pipeline/std.conf"
+#   pipeline.batch.delay: 1
+#   # queue.max_events: 1000
+#   pipeline.workers: 1000
+- pipeline.id: mongo
+  path.config: "/usr/share/logstash/pipeline/mongo.conf"
+  pipeline.batch.delay: 1
+  # queue.max_events: 1000
+  pipeline.workers: 1000
+  
